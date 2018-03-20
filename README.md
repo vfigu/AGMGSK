@@ -1,3 +1,2 @@
-COMP565 Project
-AGMGSK version 9
+COMP565
 Spring 2018
