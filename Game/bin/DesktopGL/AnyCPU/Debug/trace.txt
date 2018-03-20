@@ -1,0 +1,6 @@
+00:00:00:000  |  February 28, 2018 trace output from AGMGSKv8
+00:00:00:000  |  scene created:
+00:00:00:000  |  	   12 components
+00:00:00:000  |  	   86 collidable objects
+00:00:00:000  |  	    7 cameras
+00:04:46:336  |  system exit

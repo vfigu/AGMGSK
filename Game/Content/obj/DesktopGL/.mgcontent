@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<SourceFileCollection xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <Profile>Reach</Profile>
+  <Platform>DesktopGL</Platform>
+  <Config />
+  <SourceFiles>
+    <File>A:/Documents/Classes/Spring 2018/COMP 565/Project 1/Game/Game/Content/inspectorBackground.png</File>
+    <File>A:/Documents/Classes/Spring 2018/COMP 565/Project 1/Game/Game/Content/marble.png</File>
+    <File>A:/Documents/Classes/Spring 2018/COMP 565/Project 1/Game/Game/Content/Consolas.spritefont</File>
+    <File>A:/Documents/Classes/Spring 2018/COMP 565/Project 1/Game/Game/Content/rubber.jpg</File>
+    <File>A:/Documents/Classes/Spring 2018/COMP 565/Project 1/Game/Game/Content/tank1.jpg</File>
+    <File>A:/Documents/Classes/Spring 2018/COMP 565/Project 1/Game/Game/Content/redAvatarV6.fbx</File>
+    <File>A:/Documents/Classes/Spring 2018/COMP 565/Project 1/Game/Game/Content/100x50x100Marker.fbx</File>
+    <File>A:/Documents/Classes/Spring 2018/COMP 565/Project 1/Game/Game/Content/100x100x100brick.fbx</File>
+    <File>A:/Documents/Classes/Spring 2018/COMP 565/Project 1/Game/Game/Content/boundingSphereV8.fbx</File>
+    <File>A:/Documents/Classes/Spring 2018/COMP 565/Project 1/Game/Game/Content/cloudV3.FBX</File>
+    <File>A:/Documents/Classes/Spring 2018/COMP 565/Project 1/Game/Game/Content/dogV6.fbx</File>
+    <File>A:/Documents/Classes/Spring 2018/COMP 565/Project 1/Game/Game/Content/magentaAvatarV6.fbx</File>
+    <File>A:/Documents/Classes/Spring 2018/COMP 565/Project 1/Game/Game/Content/templeV3.fbx</File>
+    <File>A:/Documents/Classes/Spring 2018/COMP 565/Project 1/Game/Game/Content/tiger_tank.3ds</File>
+    <File>A:/Documents/Classes/Spring 2018/COMP 565/Project 1/Game/Game/Content/sferiff.jpg</File>
+    <File>A:/Documents/Classes/Spring 2018/COMP 565/Project 1/Game/Game/Content/sferiffi.jpg</File>
+    <File>A:/Documents/Classes/Spring 2018/COMP 565/Project 1/Game/Game/Content/flamable.jpg</File>
+    <File>A:/Documents/Classes/Spring 2018/COMP 565/Project 1/Game/Game/Content/flammable_tank.3ds</File>
+    <File>A:/Documents/Classes/Spring 2018/COMP 565/Project 1/Game/Game/Content/wooden_box.3ds</File>
+    <File>A:/Documents/Classes/Spring 2018/COMP 565/Project 1/Game/Game/Content/crate.jpg</File>
+    <File>A:/Documents/Classes/Spring 2018/COMP 565/Project 1/Game/Game/Content/PoliceCar15.3DS</File>
+    <File>A:/Documents/Classes/Spring 2018/COMP 565/Project 1/Game/Game/Content/bourak.jpg</File>
+    <File>A:/Documents/Classes/Spring 2018/COMP 565/Project 1/Game/Game/Content/bourak_i.jpg</File>
+    <File>A:/Documents/Classes/Spring 2018/COMP 565/Project 1/Game/Game/Content/Dragster15.3ds</File>
+    <File>A:/Documents/Classes/Spring 2018/COMP 565/Project 1/Game/Game/Content/flammable_tank_side.3ds</File>
+    <File>A:/Documents/Classes/Spring 2018/COMP 565/Project 1/Game/Game/Content/colorTexture.png</File>
+    <File>A:/Documents/Classes/Spring 2018/COMP 565/Project 1/Game/Game/Content/heightTexture.png</File>
+  </SourceFiles>
+</SourceFileCollection>
