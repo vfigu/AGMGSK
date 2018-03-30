@@ -419,18 +419,18 @@ public class Stage : Game {
       Components.Add(terrain);
       // Create the treasures for the map
       int nTreasures = 4;
-      TreasureMaker treasures = new TreasureMaker(this, "treasure", "flammable_tank", "flammable_tank_side", 3.0f, nTreasures);
+      TreasureMaker treasures = new TreasureMaker(this, "treasure", "flammable_tank", "flammable_tank_side", 0.5f, nTreasures);
       for(int i = 0; i < nTreasures; i++)
         Components.Add(treasures.Treasures[i]);
       // Load Agent mesh objects, meshes do not have textures
       player = new Player(this, "Chaser",
          new Vector3(510 * spacing, terrain.surfaceHeight(510, 507), 507 * spacing),
-         new Vector3(0, 1, 0), 1.0f, "tiger_tank", treasures.Name, treasures.Treasures, 0.4f, 6, 2);  // face looking diagonally across stage
-      player.IsCollidable = true; // test collisions for player
+         new Vector3(0, 1, 0), 1.0f, "tiger_tank", treasures.Name, treasures.Treasures, 0.6f, 6, 2);  // face looking diagonally across stage
+      player.IsCollidable = false; // test collisions for player
       Components.Add(player);
       npAgent = new NPAgent(this, "Evader",
          new Vector3(490 * spacing, terrain.surfaceHeight(490, 450), 450 * spacing),
-         new Vector3(0, 1, 0), 1.0f, "PoliceCar15", treasures.Name, treasures.Treasures, 0.4f);  // facing +Z
+         new Vector3(0, 1, 0), 1.0f, "PoliceCar15", treasures.Name, treasures.Treasures, 0.6f);  // facing +Z
 		npAgent.IsCollidable = true;  // npAgent does not test for collisions
       Components.Add(npAgent);
 		// create file output stream for trace()

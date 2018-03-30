@@ -46,7 +46,8 @@ public class NPAgent : Agent {
     private KeyboardState oldKeyboardState;
     private NavNode nextGoal;
     private NavNode Goal;
-    private Path path;
+    private NavNode resume;
+        private Path path;
     private Path treasurePath;
     public int spacing;
     private int snapDistance = 1;  // this should be a function of step and stepSize
@@ -120,6 +121,7 @@ public class NPAgent : Agent {
             Goal = aPath.Closest; // searches for closest treasure and creates Goal Node
             treasurePath = aPath.createPath(Goal); // creates A* Path for Goal node
             nextGoal = treasurePath.NextNode;
+            resume = new NavNode(agentObject.Translation);
         }
         
         if(pathFinding || this.TreasureList.Count <= 0){
@@ -151,6 +153,7 @@ public class NPAgent : Agent {
             stage.setInfo(16,
                 string.Format("          nextGoal ({0:f0}, {1:f0}, {2:f0})  distance to next goal = {3,5:f2})",
                 nextGoal.Translation.X / stage.Spacing, nextGoal.Translation.Y, nextGoal.Translation.Z / stage.Spacing, distance));
+
             if (distance <= snapDistance)
             {
                 // snap to nextGoal and orient toward the new nextGoal 
@@ -159,15 +162,15 @@ public class NPAgent : Agent {
                 // agentObject.turnToFace(nextGoal.Translation);
             }
 
-            if(!reset && Goal.DistanceBetween(agentObject.Translation, spacing) < 4.25) {
+            if(!reset && Goal.DistanceBetween(agentObject.Translation, spacing) < 2) {
                 // quick fix for occasionly getting stuck on walls
                 // if it gets close enough to tag the treaure it turns back
                 // it creates an A* Path to the previous pathfinding node 
-                Goal = path.NextNode;
+                Goal = resume;
                 treasurePath = aPath.createPath(Goal);
                 reset = true;
             }
-            else if(reset && Goal.DistanceBetween(agentObject.Translation, spacing) < 3) {
+            else if(reset && Goal.DistanceBetween(agentObject.Translation, spacing) < 2) {
                 // if the NPAgent returns to previous path node it returns pathfinding mode
                 reset = false;
                 pathFinding = true;

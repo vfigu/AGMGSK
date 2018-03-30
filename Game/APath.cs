@@ -145,8 +145,12 @@ namespace AGMGSKv9
             NavNode goal = new NavNode(pos);
             NavNode current = start;
             int tentative_gScore;
-            int gap = 1;
-            int[,] add = { {0,gap}, {0,-gap}, {gap,0}, {-gap,0} };
+
+            // The set of acceptable moves: up, down, left, right, diagonals
+            int[,] add = { { 0, 1}, { 0,-1}, { 1, 0}, {-1, 0},
+                           { 1, 1}, {-1,-1}, { 1,-1}, {-1, 1}, {0, 0},
+                            { 0, 2}, { 0,-2}, { 2, 0}, {-2, 0},
+                           { 2, 2}, {-2,-2}, { 2,-2}, {-2, 2},};
 
             // The set of nodes already evaluated
             List<NavNode> closedSet = new List<NavNode>();
@@ -194,7 +198,6 @@ namespace AGMGSKv9
                 } // current:= the node in openSet having the lowest fScore[] value
                 if(current.Translation == goal.Translation) {
                     aPath = reconstructPath(cameFrom, current);
-                    stage.Terrain.Multiplier = 20;
                     return aPath;
                 }
 
@@ -204,7 +207,7 @@ namespace AGMGSKv9
 
                 //Finds neighbors of current node
                 neighborSet.Clear();
-                for(int k = 0; k < 4; k++)
+                for(int k = 0; k < 8; k++)
                 {
                     pos = new Vector3((int)current.Translation.X + add[k, 0], (int)goal.Translation.Y, 
                         (int)current.Translation.Z + add[k, 1] );
@@ -215,23 +218,31 @@ namespace AGMGSKv9
                         continue;
                     if (Exists(closedSet, neighbor))
                         continue;
+
                     neighborSet.Add(neighbor);
                     if (obj3d != null)
                     {
-                        // If the neighbor is a wall then skip
+                        // If the neighbor is an obstacle then skip
                         if (stage.SameType(obj3d.Name, "wall") || stage.SameType(obj3d.Name, "temple"))
                         {
                             neighborSet.Remove(neighbor);
-                            if(Exists(closedSet, neighbor))
-                                continue;
-                            closedSet.Add(neighbor);
+                            for (int j = 8; j < 9; j++)
+                            {
+                                pos = new Vector3((int)current.Translation.X + add[j, 0], (int)goal.Translation.Y,
+                                    (int)current.Translation.Z + add[j, 1]);
+                                obj3d = agentObject.CollidedWith(pos * spacing);
+                                neighbor = new NavNode(pos);
+
+                                if (Exists(closedSet, neighbor))
+                                    continue;
+                                closedSet.Add(neighbor);
+                            }
                         }
                         //else if (stage.SameType(obj3d.Name, "treasure"))
                         //{
                         //    if (neighbor.Translation == goal.Translation)
                         //    {
                         //        aPath = reconstructPath(cameFrom, current);
-                        //        //stage.Terrain.Multiplier = 20;
                         //        return aPath;
                         //    }
                         //}

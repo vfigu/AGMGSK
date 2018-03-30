@@ -126,17 +126,26 @@ public class NavNode {
    }
 
     // Basic up and down, left and right heuristic cost estimate
-    public int Heuristic(NavNode goal){
-      int X = Math.Abs((int)translation.X - (int)goal.Translation.X);
-      int Z = Math.Abs((int)translation.X - (int)goal.Translation.X);
+    public int Heuristic(NavNode goal) {
+        float Scale = 0.75f; // Scale
+        float Cost = heuristicCostEstimate(goal);
 
-      int C = X + Z;
-      return C;
-   }
+        // Manhattan
+        //int X = Math.Abs((int)translation.X - (int)goal.Translation.X);
+        //int Z = Math.Abs((int)translation.X - (int)goal.Translation.X);
+
+        //return X + Z;
+
+        // Diagonal
+
+        float dx = Math.Abs(translation.X - goal.translation.X);
+        float dy = Math.Abs(translation.X - goal.translation.X);
+        return (int)(Scale * (dx + dy) + (Cost - 2 * Scale) * Math.Min(dx, dy));
+    }
 
    public int heuristicCostEstimate(NavNode goal){
       double X = (translation.X-goal.Translation.X);
-      int A =(int)Math.Pow(X,2);
+      int A = (int)Math.Pow(X,2);
 
       double Z = (translation.Z-goal.Translation.Z);
       int B = (int)Math.Pow(Z,2);
