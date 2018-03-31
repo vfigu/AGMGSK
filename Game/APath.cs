@@ -7,17 +7,14 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 #endregion
 
-namespace AGMGSKv9
-{
-    class APath
-    {
+namespace AGMGSKv9 {
+    class APath {
         private Stage stage;
         private int spacing;
         private Object3D agentObject;
         private List<Model3D> treasures;
 
-        public APath(Stage theStage, Object3D agent, List<Model3D> objList)
-        {
+        public APath(Stage theStage, Object3D agent, List<Model3D> objList) {
             stage = theStage;
             spacing = theStage.Spacing;
             agentObject = agent;
@@ -26,100 +23,94 @@ namespace AGMGSKv9
 
         // creates NavNode for agent's current location
         // not needed afterall
-        public NavNode Start
-        {
-            get
-            {
+        public NavNode Start {
+            get {
                 NavNode node = new NavNode(new Vector3(agentObject.X,
                     stage.Terrain.surfaceHeight((int)agentObject.X / spacing,
                     (int)agentObject.Z / spacing), agentObject.Z),
-                   NavNode.NavNodeEnum.WAYPOINT);
+                    NavNode.NavNodeEnum.WAYPOINT);
                 return node;
             }
         }
 
         // returns the NavNode of the treasure that is closest to the agent 
         public NavNode Closest { 
-        get {
-            Model3D closest = null;
-            int X = (int)agentObject.X / spacing;
-            int Z = (int)agentObject.Z / spacing;
-            int x, z;
+            get {
+                Model3D closest = null;
+                int X = (int)agentObject.X / spacing;
+                int Z = (int)agentObject.Z / spacing;
+                int x, z;
 
-            double A = 0;
-            double B = 0;
-            double C = 0;
-            double smallest = -1;
+                double A = 0;
+                double B = 0;
+                double C = 0;
+                double smallest = -1;
             
-            for(int i = 0; i < treasures.Count; i++)
-            {
-                x = (int)treasures[i].Instance[0].X / spacing;
-                z = (int)treasures[i].Instance[0].Z / spacing;
-                A = Math.Pow(x-X, 2);
-                B = Math.Pow(z-Z, 2);
-                C = Math.Sqrt(A + B);
+                for(int i = 0; i < treasures.Count; i++) {
+                    x = (int)treasures[i].Instance[0].X / spacing;
+                    z = (int)treasures[i].Instance[0].Z / spacing;
+                    A = Math.Pow(x-X, 2);
+                    B = Math.Pow(z-Z, 2);
+                    C = Math.Sqrt(A + B);
 
-                if(C < smallest || smallest < 0)
-                {
-                    smallest = C;
-                    closest = treasures[i];
+                    if(C < smallest || smallest < 0) {
+                        smallest = C;
+                        closest = treasures[i];
+                    }
                 }
-            }
 
-            NavNode node = new NavNode(new Vector3(closest.Instance[0].X,
-                stage.Terrain.surfaceHeight((int)closest.Instance[0].X / spacing, 
-                (int)closest.Instance[0].Y / spacing), closest.Instance[0].Z),
-               NavNode.NavNodeEnum.WAYPOINT);
-            return node;
-        }}
+                NavNode node = new NavNode(new Vector3(closest.Instance[0].X,
+                    stage.Terrain.surfaceHeight((int)closest.Instance[0].X / spacing, 
+                    (int)closest.Instance[0].Y / spacing), closest.Instance[0].Z),
+                    NavNode.NavNodeEnum.WAYPOINT);
+                return node;
+            }
+        }
 
         // not sure why I put these two of the same function
         // I was gonna modify one to return something slightly different
         // perhaps the Vector3?
         private NavNode Goal { 
-        get {
-            Model3D closest = null;
-            int X = (int)agentObject.X / spacing;
-            int Z = (int)agentObject.Z / spacing;
-            int x, z;
+            get {
+                Model3D closest = null;
+                int X = (int)agentObject.X / spacing;
+                int Z = (int)agentObject.Z / spacing;
+                int x, z;
 
-            double A = 0;
-            double B = 0;
-            double C = 0;
-            double smallest = -1;
+                double A = 0;
+                double B = 0;
+                double C = 0;
+                double smallest = -1;
             
-            for(int i = 0; i < treasures.Count; i++)
-            {
-                x = (int)treasures[i].Instance[0].X / spacing;
-                z = (int)treasures[i].Instance[0].Z / spacing;
-                A = Math.Pow(x-X, 2);
-                B = Math.Pow(z-Z, 2);
-                C = Math.Sqrt(A + B);
+                for(int i = 0; i < treasures.Count; i++) {
+                    x = (int)treasures[i].Instance[0].X / spacing;
+                    z = (int)treasures[i].Instance[0].Z / spacing;
+                    A = Math.Pow(x-X, 2);
+                    B = Math.Pow(z-Z, 2);
+                    C = Math.Sqrt(A + B);
 
-                if(C < smallest || smallest < 0)
-                {
-                    smallest = C;
-                    closest = treasures[i];
+                    if(C < smallest || smallest < 0) {
+                        smallest = C;
+                        closest = treasures[i];
+                    }
                 }
-            }
 
-            NavNode node = new NavNode(new Vector3(closest.Instance[0].X / spacing,
-                stage.Terrain.surfaceHeight((int)closest.Instance[0].X / spacing, 
-                (int)closest.Instance[0].Z / spacing), closest.Instance[0].Z / spacing),
-               NavNode.NavNodeEnum.WAYPOINT);
-            return node;
-        }}
+                NavNode node = new NavNode(new Vector3(closest.Instance[0].X / spacing,
+                    stage.Terrain.surfaceHeight((int)closest.Instance[0].X / spacing, 
+                    (int)closest.Instance[0].Z / spacing), closest.Instance[0].Z / spacing),
+                    NavNode.NavNodeEnum.WAYPOINT);
+                return node;
+            }
+        }
 
         // helper functions
-        public bool Exists(List<NavNode> Set, NavNode target)
-        {
+        public bool Exists(List<NavNode> Set, NavNode target) {
             for (int i = 0; i < Set.Count; i++)
                 if (Set[i].Translation == target.Translation)
                     return true;
             return false;
         }
-        public bool Invalid(NavNode target)
-        {
+        public bool Invalid(NavNode target) {
             if(target.Translation.X > stage.Range)
                 return true;
             else if (target.Translation.Z > stage.Range)
@@ -148,9 +139,7 @@ namespace AGMGSKv9
 
             // The set of acceptable moves: up, down, left, right, diagonals
             int[,] add = { { 0, 1}, { 0,-1}, { 1, 0}, {-1, 0},
-                           { 1, 1}, {-1,-1}, { 1,-1}, {-1, 1}, {0, 0},
-                            { 0, 2}, { 0,-2}, { 2, 0}, {-2, 0},
-                           { 2, 2}, {-2,-2}, { 2,-2}, {-2, 2},};
+                            { 1, 1}, {-1,-1}, { 1,-1}, {-1, 1} };
 
             // The set of nodes already evaluated
             List<NavNode> closedSet = new List<NavNode>();
@@ -188,10 +177,9 @@ namespace AGMGSKv9
             fScore[(int)start.Translation.X, (int)start.Translation.Z] = start.Heuristic(goal);
 
 
-            while(openSet.Count > 0){
+            while(openSet.Count > 0) {
                 current = openSet[0];
-                for(int i = 1; i < openSet.Count; i++)
-                {
+                for(int i = 1; i < openSet.Count; i++) {
                     if(fScore[(int)current.Translation.X, (int)current.Translation.Z] 
                         > fScore[(int)openSet[i].Translation.X, (int)openSet[i].Translation.Z])
                         current = openSet[i];
@@ -207,8 +195,7 @@ namespace AGMGSKv9
 
                 //Finds neighbors of current node
                 neighborSet.Clear();
-                for(int k = 0; k < 8; k++)
-                {
+                for(int k = 0; k < 8; k++) {
                     pos = new Vector3((int)current.Translation.X + add[k, 0], (int)goal.Translation.Y, 
                         (int)current.Translation.Z + add[k, 1] );
                     Object3D obj3d = agentObject.CollidedWith(pos*spacing);
@@ -220,28 +207,31 @@ namespace AGMGSKv9
                         continue;
 
                     neighborSet.Add(neighbor);
-                    if (obj3d != null)
-                    {
+                    if (obj3d != null) {
                         // If the neighbor is an obstacle then skip
-                        if (stage.SameType(obj3d.Name, "wall") || stage.SameType(obj3d.Name, "temple"))
-                        {
+                        if (stage.SameType(obj3d.Name, "wall") || stage.SameType(obj3d.Name, "temple")) {
                             neighborSet.Remove(neighbor);
-                            for (int j = 8; j < 9; j++)
-                            {
-                                pos = new Vector3((int)current.Translation.X + add[j, 0], (int)goal.Translation.Y,
-                                    (int)current.Translation.Z + add[j, 1]);
-                                obj3d = agentObject.CollidedWith(pos * spacing);
-                                neighbor = new NavNode(pos);
+                            if (Exists(closedSet, neighbor))
+                                continue;
+                            closedSet.Add(neighbor);
 
-                                if (Exists(closedSet, neighbor))
-                                    continue;
-                                closedSet.Add(neighbor);
-                            }
+                            // removes neighbors of a wall to decrease chance of collision
+                            //for (int j = 0; j < 8; j++)
+                            //{
+                            //    pos = new Vector3((int)current.Translation.X + add[j, 0], (int)goal.Translation.Y,
+                            //        (int)current.Translation.Z + add[j, 1]);
+                            //    obj3d = agentObject.CollidedWith(pos * spacing);
+                            //    neighbor = new NavNode(pos);
+
+                            //    if (Exists(closedSet, neighbor))
+                            //        continue;
+                            //    closedSet.Add(neighbor);
+                            //}
                         }
-                        //else if (stage.SameType(obj3d.Name, "treasure"))
-                        //{
-                        //    if (neighbor.Translation == goal.Translation)
-                        //    {
+
+                        // finishes earlier
+                        //else if (stage.SameType(obj3d.Name, "treasure")) {
+                        //    if (neighbor.Translation == goal.Translation) {
                         //        aPath = reconstructPath(cameFrom, current);
                         //        return aPath;
                         //    }
@@ -282,22 +272,22 @@ namespace AGMGSKv9
             int x = (int)current.Translation.X;
             int z = (int)current.Translation.Z;
 
-            while(cameFrom[x,z].Translation != start.Translation)
-            {
+            while(cameFrom[x,z].Translation != start.Translation) {
                 pos = cameFrom[x, z].Translation;
                 reversePath.Add(new NavNode(pos * spacing));
                 x = (int)pos.X;
                 z = (int)pos.Z;
             }
 
-
             Path total_path = null;
             if(reversePath.Count < 1)
                 total_path = new Path(stage, start, Path.PathType.SINGLE);
             else
                 total_path = new Path(stage, reversePath[reversePath.Count - 1], Path.PathType.SINGLE);
+
             for (int i = reversePath.Count - 1; i >= 0; i--)
                 total_path.Node.Add(reversePath[i]);
+
             return total_path;
         }
     }

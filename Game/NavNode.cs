@@ -17,8 +17,6 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-
-
 #region Using Statements
 using System;
 using System.IO;  // needed for trace()'s fout
@@ -29,144 +27,134 @@ using Microsoft.Xna.Framework.Input;
 #endregion
 
 namespace AGMGSKv9 {
-   
-/// <summary>
-/// A WayPoint or Marker to be used in path following or path finding.
-/// Five types of WAYPOINT:
-/// <list type="number"> VERTEX, a non-navigatable terrain vertex </list>
-/// <list type="number"> WAYPOINT, a navigatable terrain vertex </list>
-/// <list type="number"> PATH, a node in a path (could be the result of A*) </list>
-/// <list type="number"> OPEN, a possible node to follow in an A*path</list>
-/// <list type="number"> CLOSED, a node that has been evaluated by A* </list>
- 
-/// 
-/// 2/14/2012  last update
-/// </summary>
-public class NavNode {
-   public enum NavNodeEnum { VERTEX, WAYPOINT, PATH, OPEN, CLOSED };
-   private double distance;  // can be used with A* path finding.
-   private Vector3 translation;
-   private NavNodeEnum navigatable;
-   private Vector3 nodeColor;
+    /// <summary>
+    /// A WayPoint or Marker to be used in path following or path finding.
+    /// Five types of WAYPOINT:
+    /// <list type="number"> VERTEX, a non-navigatable terrain vertex </list>
+    /// <list type="number"> WAYPOINT, a navigatable terrain vertex </list>
+    /// <list type="number"> PATH, a node in a path (could be the result of A*) </list>
+    /// <list type="number"> OPEN, a possible node to follow in an A*path</list>
+    /// <list type="number"> CLOSED, a node that has been evaluated by A* </list>
+    /// 2/14/2012  last update
+    /// </summary>
 
-// constructors
+    public class NavNode {
+        public enum NavNodeEnum { VERTEX, WAYPOINT, PATH, OPEN, CLOSED };
+        private double distance;  // can be used with A* path finding.
+        private Vector3 translation;
+        private NavNodeEnum navigatable;
+        private Vector3 nodeColor;
 
-   /// <summary>
-   /// Make a VERTEX NavNode
-   /// </summary>
-   /// <param name="pos"> location of vertex</param>
-   public NavNode(Vector3 pos) {
-      translation = pos;
-      Navigatable = NavNodeEnum.VERTEX;
-      }
+        // constructors
+        /// <summary>
+        /// Make a VERTEX NavNode
+        /// </summary>
+        /// <param name="pos"> location of vertex</param>
+        public NavNode(Vector3 pos) {
+            translation = pos;
+            Navigatable = NavNodeEnum.VERTEX;
+        }
 
-   /// <summary>
-   /// Make a NavNode and set its Navigational type
-   /// </summary>
-   /// <param name="pos"> location of WAYPOINT</param>
-   /// <param name="nType"> Navigational type {VERTEX, WAYPOINT, PATH, OPEN, CLOSED} </param>
-   public NavNode(Vector3 pos, NavNodeEnum nType) {
-      translation = pos;
-      Navigatable = nType;
-      }
+        /// <summary>
+        /// Make a NavNode and set its Navigational type
+        /// </summary>
+        /// <param name="pos"> location of WAYPOINT</param>
+        /// <param name="nType"> Navigational type {VERTEX, WAYPOINT, PATH, OPEN, CLOSED} </param>
+        public NavNode(Vector3 pos, NavNodeEnum nType) {
+            translation = pos;
+            Navigatable = nType;
+        }
 
-// properties
+        // properties
+        public Vector3 NodeColor {
+            get { return nodeColor; }
+        }
+        public Double Distance {
+            get { return distance; }
+            set { distance = value; }
+        }
+        public Vector3 Translation {
+            get { return translation; }
+        }
 
-   public Vector3 NodeColor {
-      get { return nodeColor; }}
+        /// <summary>
+        /// When changing the Navigatable type the WAYPOINT's nodeColor is 
+        /// also updated.
+        /// </summary>
+        public NavNodeEnum Navigatable {
+            get { return navigatable; }
+            set {
+                navigatable = value; 
+                switch (navigatable) {
+                    case NavNodeEnum.VERTEX   : nodeColor = Color.Black.ToVector3();  break;  // black
+                    case NavNodeEnum.WAYPOINT : nodeColor = Color.Yellow.ToVector3(); break;  // yellow
+                    case NavNodeEnum.PATH     : nodeColor = Color.Blue.ToVector3();   break;  // blue
+                    case NavNodeEnum.OPEN     : nodeColor = Color.White.ToVector3();  break;  // white
+                    case NavNodeEnum.CLOSED   : nodeColor = Color.Red.ToVector3();    break;  // red
+                }
+            }
+        }
 
-   public Double Distance {
-      get { return distance; }
-      set { distance = value; }
-      }
-
-   /// <summary>
-   /// When changing the Navigatable type the WAYPOINT's nodeColor is 
-   /// also updated.
-   /// </summary>
-   public NavNodeEnum Navigatable {
-      get { return navigatable; }
-      set { navigatable = value; 
-            switch (navigatable) {
-               case NavNodeEnum.VERTEX   : nodeColor = Color.Black.ToVector3();  break;  // black
-               case NavNodeEnum.WAYPOINT : nodeColor = Color.Yellow.ToVector3(); break;  // yellow
-               case NavNodeEnum.PATH     : nodeColor = Color.Blue.ToVector3();   break;  // blue
-               case NavNodeEnum.OPEN     : nodeColor = Color.White.ToVector3();  break;  // white
-               case NavNodeEnum.CLOSED   : nodeColor = Color.Red.ToVector3();    break;  // red
-               }
-            }} 
-
-   public Vector3 Translation {
-      get { return translation; }
-      }
-        
-   public int DistanceBetween(NavNode n, int spacing = 1) {
-      int X = (int)n.Translation.X / spacing;
-      int Z = (int)n.Translation.Z / spacing;
-      int x = (int)translation.X / spacing;
-      int z = (int)translation.Z / spacing;
+        // methods
+        public int DistanceBetween(NavNode n, int spacing = 1) {
+            int X = (int)n.Translation.X / spacing;
+            int Z = (int)n.Translation.Z / spacing;
+            int x = (int)translation.X / spacing;
+            int z = (int)translation.Z / spacing;
       
-      int A = (int)Math.Pow(x - X, 2);
-      int B = (int)Math.Pow(z - Z, 2);
-      int C = (int)Math.Sqrt(A + B);
+            int A = (int)Math.Pow(x - X, 2);
+            int B = (int)Math.Pow(z - Z, 2);
+            int C = (int)Math.Sqrt(A + B);
       
-      return C;
-   }
-   public int DistanceBetween(Vector3 n, int spacing = 1) {
-      int X = (int)n.X / spacing;
-      int Z = (int)n.Z / spacing;
-      int x = (int)translation.X / spacing;
-      int z = (int)translation.Z / spacing;
+            return C;
+        }
+        public int DistanceBetween(Vector3 n, int spacing = 1) {
+            int X = (int)n.X / spacing;
+            int Z = (int)n.Z / spacing;
+            int x = (int)translation.X / spacing;
+            int z = (int)translation.Z / spacing;
       
-      int A = (int)Math.Pow(x - X, 2);
-      int B = (int)Math.Pow(z - Z, 2);
-      int C = (int)Math.Sqrt(A + B);
+            int A = (int)Math.Pow(x - X, 2);
+            int B = (int)Math.Pow(z - Z, 2);
+            int C = (int)Math.Sqrt(A + B);
       
-      return C;
-   }
+            return C;
+        }
 
-    // Basic up and down, left and right heuristic cost estimate
-    public int Heuristic(NavNode goal) {
-        float Scale = 0.75f; // Scale
-        float Cost = heuristicCostEstimate(goal);
+        public int Heuristic(NavNode goal) {
+            // Scale optimzes to specific map
+            float Scale = 1.75f;
+            float Cost = heuristicCostEstimate(goal);
+            float dx = Math.Abs(translation.X - goal.Translation.X);
+            float dz = Math.Abs(translation.Z - goal.Translation.Z);
 
-        // Manhattan
-        //int X = Math.Abs((int)translation.X - (int)goal.Translation.X);
-        //int Z = Math.Abs((int)translation.X - (int)goal.Translation.X);
+            // Manhattan (up, down, left, right)
+            //return (int)(Scale * (dx + dz) + (Cost - 2 * Scale));
 
-        //return X + Z;
+            // Diagonal (up, down, left, right, diagonal)
+            return (int)(Scale * (dx + dz) + (Cost - 2 * Scale) * Math.Min(dx, dz));
+        }
+        public int heuristicCostEstimate(NavNode goal){
+            double X = (translation.X-goal.Translation.X);
+            int A = (int)Math.Pow(X,2);
 
-        // Diagonal
+            double Z = (translation.Z-goal.Translation.Z);
+            int B = (int)Math.Pow(Z,2);
 
-        float dx = Math.Abs(translation.X - goal.translation.X);
-        float dy = Math.Abs(translation.X - goal.translation.X);
-        return (int)(Scale * (dx + dy) + (Cost - 2 * Scale) * Math.Min(dx, dy));
+            int C = A + B;
+            return C;
+        }
+
+        /// <summary>
+        /// Useful in A* path finding 
+        /// when inserting into an min priority queue open set ordered on distance
+        /// </summary>
+        /// <param name="n"> goal node </param>
+        /// <returns> usual comparison values:  -1, 0, 1 </returns>
+        public int CompareTo(NavNode n) {
+            if (distance < n.Distance)       return -1;
+            else if (distance > n.Distance)  return  1;
+            else                             return  0;
+        }  
     }
-
-   public int heuristicCostEstimate(NavNode goal){
-      double X = (translation.X-goal.Translation.X);
-      int A = (int)Math.Pow(X,2);
-
-      double Z = (translation.Z-goal.Translation.Z);
-      int B = (int)Math.Pow(Z,2);
-
-      int C = A + B;
-      return C;
-   }
-
-
-// methods
-   
-   /// <summary>
-   /// Useful in A* path finding 
-   /// when inserting into an min priority queue open set ordered on distance
-   /// </summary>
-   /// <param name="n"> goal node </param>
-   /// <returns> usual comparison values:  -1, 0, 1 </returns>
-   public int CompareTo(NavNode n) {
-      if (distance < n.Distance)       return -1;
-      else if (distance > n.Distance)  return  1;
-      else                             return  0;
-      }  
-   }
 }

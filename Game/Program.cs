@@ -16,17 +16,13 @@
 using System;
 // using System.Collections;  // needed any more 1/11/2017
 
-namespace AGMGSKv9
-{
-    static class Program
-    {
+namespace AGMGSKv9 {
+    static class Program {
         /// <summary>
         /// The main entry point for the application.
         /// </summary>
-        static void Main(string[] args)
-        {
-            using (Stage stage = new Stage())
-            {
+        static void Main(string[] args) {
+            using (Stage stage = new Stage()) {
                 stage.Run();
             }
         }
