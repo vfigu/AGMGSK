@@ -110,6 +110,9 @@ namespace AGMGSKv9 {
         // Custom Sage additions
         private bool lerpToggle = true;//start with lerp enable
 
+        private int[] packing = new int[4] { 0, 33, 66, 99 };//add packing array corresponding to percent packing
+        private int percentPacking = 0;//index to choose which percent
+
         // Number of treasures on this map
         private int nTreasures = 4;
 
@@ -532,9 +535,12 @@ namespace AGMGSKv9 {
             // moved from timer to reflect real-time gameplay
 	        inspector.setInfo(11, agentLocation(player));
 	        inspector.setInfo(12, agentLocation(npAgent));
-        
-	        // Process user keyboard events that relate to the render state of the the stage
-	        KeyboardState keyboardState = Keyboard.GetState();
+
+            //percentage of packing display: DLP
+            inspector.setInfo(13, "Percentage packing: " + packing[percentPacking] + "%");
+
+            // Process user keyboard events that relate to the render state of the the stage
+            KeyboardState keyboardState = Keyboard.GetState();
 	        if (keyboardState.IsKeyDown(Keys.Escape))
                 Exit();
 	        else if (keyboardState.IsKeyDown(Keys.B) && !oldKeyboardState.IsKeyDown(Keys.B)) 
@@ -560,6 +566,15 @@ namespace AGMGSKv9 {
             //crank up the lerp
             else if (keyboardState.IsKeyDown(Keys.L) && !oldKeyboardState.IsKeyDown(Keys.L)) {
                     lerpToggle = !lerpToggle;
+            }
+            //cycle flocking percentages
+            else if (keyboardState.IsKeyDown(Keys.P) && !oldKeyboardState.IsKeyDown(Keys.P))
+            {
+                if (percentPacking == 3)//wrap index
+                    percentPacking = 0;
+                else
+                    percentPacking++;//increment pack percentage
+                
             }
 	        // toggle update speed between FixedStep and ! FixedStep
 	        else if (keyboardState.IsKeyDown(Keys.T) && !oldKeyboardState.IsKeyDown(Keys.T))

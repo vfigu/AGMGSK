@@ -75,21 +75,22 @@ public class Pack : MovableModel3D {
    /// Supports leaderless and leader based "flocking" 
    /// </summary>      
    public override void Update(GameTime gameTime) {
-      // if (leader == null) need to determine "virtual leader from members"
-      float angle = 0.3f;
-      foreach (Object3D obj in instance) {
+        //Original implementation
+        // if (leader == null) need to determine "virtual leader from members"
+        float angle = 0.3f;
+        foreach (Object3D obj in instance) {
          obj.Yaw = 0.0f;
          // change direction 4 time a second  0.07 = 4/60
-         if ( random.NextDouble() < 0.07) {
-            if (random.NextDouble() < 0.5) obj.Yaw -= angle; // turn left
-            else  obj.Yaw += angle; // turn right
-            }
+           if ( random.NextDouble() < 0.07) {
+              if (random.NextDouble() < 0.5) obj.Yaw -= angle; // turn left
+              else  obj.Yaw += angle; // turn right
+           }
          obj.updateMovableObject();
          stage.setSurfaceHeight(obj);
          }
       base.Update(gameTime);  // MovableMesh's Update(); 
       }
-
+     //end of original implementation
 
    public Object3D Leader {
       get { return leader; }
