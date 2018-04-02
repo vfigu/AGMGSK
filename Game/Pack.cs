@@ -55,7 +55,7 @@ public class Pack : MovableModel3D {
       leader = theLeader;
 		int spacing = stage.Spacing;
 		// initial vertex offset of dogs around (xPos, zPos)
-		int [,] position = { {0, 0}, {7, -4}, {-5, -2}, {-7, 4}, {5, 2} };
+		int [,] position = { {0, 0}, {10, -7}, {-20, -4}, {-10, 4}, {15, 7} };
 		for( int i = 0; i < position.GetLength(0); i++) {
 			int x = xPos + position[i, 0];
 			int z = zPos + position[i, 1];

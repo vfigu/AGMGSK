@@ -465,8 +465,8 @@ namespace AGMGSKv9 {
 	        Components.Add(wall);
 	        
             // create a pack for "flocking" algorithms
-	        // create a Pack of 6 dogs centered at (450, 500) that is leaderless
-	        Pack pack = new Pack(this, "dog", "Dragster15", 5, 450, 430, null, 0.5f);
+	        // create a Pack of 6 dogs centered at (450, 500) that is lead by player.
+	        Pack pack = new Pack(this, "dog", "Dragster15", 5, 450, 430, player.AgentObject, 0.5f);
 	        Components.Add(pack);
 
 
@@ -479,8 +479,8 @@ namespace AGMGSKv9 {
                 new Vector3(0, 1, 0), 0.79f); // , new Vector3(1, 4, 1));
             Components.Add(m3d);
 	        
-            // create 20 clouds
-	        Cloud cloud = new Cloud(this, "cloud", "cloudV3", 20);
+            // create 10 clouds
+	        Cloud cloud = new Cloud(this, "cloud", "cloudV3", 10);
 	        
             // Set initial camera and projection matrix
 	        setCamera(1);  // select the "whole stage" camera
