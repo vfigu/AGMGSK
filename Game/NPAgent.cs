@@ -113,13 +113,17 @@ namespace AGMGSKv9 {
                 pathFinding = false;
                 reset = false;
                 System.Diagnostics.Debug.WriteLine("N: off");
-                Goal = aPath.Closest; // searches for closest treasure and creates Goal Node
-                treasurePath = aPath.createPath(Goal); // creates A* Path for Goal node
-                nextGoal = treasurePath.NextNode;
-                resume = new NavNode(agentObject.Translation);
+
+                if(this.TreasureList.Count > 0)
+                {
+                    Goal = aPath.Closest; // searches for closest treasure and creates Goal Node
+                    treasurePath = aPath.createPath(Goal); // creates A* Path for Goal node
+                    nextGoal = treasurePath.NextNode;
+                    resume = new NavNode(agentObject.Translation);
+                }
             }
         
-            if(pathFinding || this.TreasureList.Count <= 0) {
+            if(pathFinding) {
                 nextGoal = path.CurrentNode;
                 agentObject.turnToFace(nextGoal.Translation);  // adjust to face nextGoal every move
 		        //agentObject.turnTowards(nextGoal.Translation);
@@ -136,8 +140,10 @@ namespace AGMGSKv9 {
                     nextGoal = path.NextNode;
                     //agentObject.turnTowards(nextGoal.Translation);
                 }
+
+                agentObject.defaultSpeed();
             }
-            else { // if there are still more treasures NPAgent follows A* Path
+            else if(this.TreasureList.Count > 0) { // if there are still more treasures NPAgent follows A* Path
                 agentObject.turnToFace(nextGoal.Translation);  // adjust to face nextGoal every move
                 //agentObject.turnTowards(nextGoal.Translation);
                 // See if at or close to nextGoal, distance measured in 2D xz plane
@@ -169,6 +175,10 @@ namespace AGMGSKv9 {
                     pathFinding = true;
                     nextGoal = path.CurrentNode;
                 }
+            }
+            else if(this.TreasureList.Count == 0)
+            {
+                agentObject.Step = 0;
             }
             
             oldKeyboardState = keyboardState;

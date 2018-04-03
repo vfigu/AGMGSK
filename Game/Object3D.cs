@@ -48,12 +48,12 @@ namespace AGMGSKv9 {
 
 public class Object3D  {
    public Model3D model;
-   private string name;                // string identifier
-   private Stage stage;                // framework stage object
-   public Matrix orientation;         // object's orientation 
-   private Vector3 scales;             // object's scale factors
-   private float pitch, roll, yaw;     // changes in rotation
-   private int step,  stepSize;        // values for stepping
+   private string name;                         // string identifier
+   private Stage stage;                         // framework stage object
+   public Matrix orientation;                   // object's orientation 
+   private Vector3 scales;                      // object's scale factors
+   private float pitch, roll, yaw;              // changes in rotation
+   private int step,  stepSize, defaultStep;    // values for stepping
    // object's BoundingSphere
    private Vector3 objectBoundingSphereCenter;    
    private float objectBoundingSphereRadius = 0.0f;
@@ -79,6 +79,7 @@ public class Object3D  {
       model = aModel;
       name = label;
       step = 1;
+      defaultStep = step;
       stepSize = 10; 
       pitch = yaw = roll = 0.0f;
       orientation = Matrix.Identity;
@@ -104,6 +105,7 @@ public class Object3D  {
       scales = objectScales;
       model = aModel;
       step = 1;
+      defaultStep = step;
       stepSize = 10;
       pitch = yaw = roll = 0.0f;
       orientation = Matrix.Identity;
@@ -189,16 +191,19 @@ public class Object3D  {
    public void reset() {
       pitch = roll = yaw = 0;
       step = 0;
-      }
+   }
+   public void defaultSpeed() {
+      step = defaultStep;
+   }
 
-   // Methods
+        // Methods
 
-   /// <summary>
-   ///  Does the Object3D's new position collide with any Collidable Object3Ds ?
-   /// </summary>
-   /// <param name="position"> position Object3D wants to move to </param>
-   /// <returns> true when there is a collision </returns>
-   public Object3D CollidedWith(Vector3 position) {
+        /// <summary>
+        ///  Does the Object3D's new position collide with any Collidable Object3Ds ?
+        /// </summary>
+        /// <param name="position"> position Object3D wants to move to </param>
+        /// <returns> true when there is a collision </returns>
+        public Object3D CollidedWith(Vector3 position) {
 		float distance;
 		Vector2 pos2D = new Vector2(position.X, position.Z);
 		foreach (Object3D obj3d in stage.Collidable) {
