@@ -39,7 +39,7 @@ namespace AGMGSKv9 {
 /// </summary>
 public class Pack : MovableModel3D {   
    Object3D leader;
-
+   int[] packZones = new int[4] { 6000, 12000, 18000, 24000 };
 
 /// <summary>
 /// Construct a pack with an Object3D leader
