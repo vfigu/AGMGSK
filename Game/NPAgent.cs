@@ -27,19 +27,20 @@ using Microsoft.Xna.Framework.Input;
 #endregion
 
 namespace AGMGSKv9 {
-/// <summary>
-/// A non-playing character that moves.  Override the inherited Update(GameTime)
-/// to implement a movement (strategy?) algorithm.
-/// Distribution NPAgent moves along an "exploration" path that is created by the
-/// from int[,] pathNode array.  The exploration path is traversed in a reverse path loop.
-/// Paths can also be specified in text files of Vector3 values, see alternate
-/// Path class constructors.
-/// 
-/// 1/20/2016 last changed
-/// </summary>
+    /// <summary>
+    /// A non-playing character that moves.  Override the inherited Update(GameTime)
+    /// to implement a movement (strategy?) algorithm.
+    /// Distribution NPAgent moves along an "exploration" path that is created by the
+    /// from int[,] pathNode array.  The exploration path is traversed in a reverse path loop.
+    /// Paths can also be specified in text files of Vector3 values, see alternate
+    /// Path class constructors.
+    /// 
+    /// 1/20/2016 last changed
+    /// </summary>
+
     public class NPAgent : Agent {
         private bool pathFinding = true;
-        private bool reset = false;
+        private bool restart = false;
         private KeyboardState oldKeyboardState;
         private NavNode nextGoal;
         private NavNode Goal;
@@ -70,23 +71,27 @@ namespace AGMGSKv9 {
         /// <param name="radians"> initial rotation</param>
         /// <param name="meshFile"> Direct X *.x Model in Contents directory </param>
 
-        public NPAgent(Stage theStage, string label, Vector3 pos, Vector3 orientAxis, 
+        public NPAgent(Stage theStage, string label, Vector3 orientAxis,
             float radians, string meshFile, string objOfInterest = null, List<Model3D> objList = null,
             float boundingMultiplier = 1.05f)
-            : base(theStage, label, pos, orientAxis, radians, meshFile, objOfInterest, objList, boundingMultiplier) {
+            : base(theStage, label, Vector3.One, orientAxis, radians, meshFile, objOfInterest, objList, boundingMultiplier) {
             // change names for on-screen display of current camera
 
             first.Name =  "npFirst";
             follow.Name = "npFollow";
             above.Name =  "npAbove";
-            IsCollidable = true;
+
             if(IsCollidable) stage.Collidable.Add(agentObject);
             spacing = theStage.Spacing;
             
             // path is built to work on specific terrain, make from int[x,z] array pathNode
             path = new Path(stage, pathNode, Path.PathType.LOOP); // continuous search path
+            path.Random();
+
             // where A* paths will be stored
             aPath = new APath(theStage, agentObject, objList);
+
+            agentObject.Translation = path.CurrentNode.Translation;
 
             stage.Components.Add(path);
             nextGoal = path.NextNode;  // get first path goal
@@ -111,7 +116,7 @@ namespace AGMGSKv9 {
             else if (keyboardState.IsKeyDown(Keys.N) && !oldKeyboardState.IsKeyDown(Keys.N) && pathFinding) { 
                 // toggles path finding off
                 pathFinding = false;
-                reset = false;
+                restart = false;
                 System.Diagnostics.Debug.WriteLine("N: off");
 
                 if(this.TreasureList.Count > 0)
@@ -127,7 +132,8 @@ namespace AGMGSKv9 {
                 nextGoal = path.CurrentNode;
                 agentObject.turnToFace(nextGoal.Translation);  // adjust to face nextGoal every move
 		        //agentObject.turnTowards(nextGoal.Translation);
-		        // See if at or close to nextGoal, distance measured in 2D xz plane
+		        
+                // See if at or close to nextGoal, distance measured in 2D xz plane
 		        float distance = Vector3.Distance(
 			        new Vector3(nextGoal.Translation.X, 0, nextGoal.Translation.Z),
 			        new Vector3(agentObject.Translation.X, 0, agentObject.Translation.Z));
@@ -135,6 +141,7 @@ namespace AGMGSKv9 {
                 stage.setInfo(16,
 			        string.Format("          nextGoal ({0:f0}, {1:f0}, {2:f0})  distance to next goal = {3,5:f2})", 
 			        nextGoal.Translation.X/stage.Spacing, nextGoal.Translation.Y, nextGoal.Translation.Z/stage.Spacing, distance) );
+
                 if (distance  <= snapDistance) {  
                     // snap to nextGoal and orient toward the new nextGoal 
                     nextGoal = path.NextNode;
@@ -146,6 +153,7 @@ namespace AGMGSKv9 {
             else if(this.TreasureList.Count > 0) { // if there are still more treasures NPAgent follows A* Path
                 agentObject.turnToFace(nextGoal.Translation);  // adjust to face nextGoal every move
                 //agentObject.turnTowards(nextGoal.Translation);
+
                 // See if at or close to nextGoal, distance measured in 2D xz plane
                 float distance = Vector3.Distance(
                     new Vector3(nextGoal.Translation.X, 0, nextGoal.Translation.Z),
@@ -161,23 +169,23 @@ namespace AGMGSKv9 {
                     nextGoal = treasurePath.NextNode;
                     // agentObject.turnToFace(nextGoal.Translation);
                 }
-                if(!reset && Goal.DistanceBetween(agentObject.Translation, spacing) < 2) {
-                    // quick fix for occasionly getting stuck on walls
-                    // if it gets close enough to tag the treaure it turns back
-                    // it creates an A* Path to the previous pathfinding node 
+
+                // if it gets close enough to tag the treaure it turns back
+                // quick fix for occasionly getting stuck on walls
+                if(!restart && Goal.DistanceBetween(agentObject.Translation, spacing) < 2) {
+                    // creates an A* Path to the previous pathfinding node 
                     Goal = resume;
                     treasurePath = aPath.createPath(Goal);
-                    reset = true;
+                    restart = true;
                 }
-                else if(reset && Goal.DistanceBetween(agentObject.Translation, spacing) < 2) {
+                else if(restart && Goal.DistanceBetween(agentObject.Translation, spacing) < 2) {
                     // if the NPAgent returns to previous path node it returns pathfinding mode
-                    reset = false;
+                    restart = false;
                     pathFinding = true;
                     nextGoal = path.CurrentNode;
                 }
             }
-            else if(this.TreasureList.Count == 0)
-            {
+            else if(this.TreasureList.Count == 0) {
                 agentObject.Step = 0;
             }
             

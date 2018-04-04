@@ -61,8 +61,7 @@ namespace AGMGSKv9 {
         /// </summary>
         public Agent(Stage stage, string label, Vector3 position, Vector3 orientAxis, 
             float radians, string meshFile, string objOfInterest = null, List<Model3D> objList = null, float boundingMultiplier = 1.05f) 
-            : base(stage, label, meshFile, boundingMultiplier)
-            {
+            : base(stage, label, meshFile, boundingMultiplier) {
             // create an Object3D for this agent
             agentObject = addObject(position, orientAxis, radians);
             treasure = objOfInterest;
@@ -76,7 +75,7 @@ namespace AGMGSKv9 {
             stage.addCamera(follow);
             stage.addCamera(above);
             agentCamera = first;
-            }
+        }
  
         // Properties  
         public Object3D AgentObject {
@@ -106,16 +105,16 @@ namespace AGMGSKv9 {
         public int nTreasures {
             get { return nCount; }
         }
-            
+        
         // Methods
         public override string ToString() {
             return agentObject.Name;
         }
-      
+              
         public void updateCamera() {
             agentCamera.updateViewMatrix();
         }
-      
+
         public override void Update(GameTime gameTime) { 
             Object3D obj3d = agentObject.updateMovableObject();
             Model3D model3d;
