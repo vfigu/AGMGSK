@@ -189,6 +189,10 @@ namespace AGMGSKv9 {
         public TimeSpan Time {  // Update's GameTime
 	        get { return time; }
         }
+        public int PercentPack//Accessor for the current packing percentage selected. DLP
+        {
+            get { return packing[percentPacking]; }
+        }
 
         /// <summary>
         /// Trace = "string to be printed"
