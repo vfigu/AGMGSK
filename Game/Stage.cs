@@ -486,8 +486,8 @@ namespace AGMGSKv9 {
                 new Vector3(0, 1, 0), 0.79f); // , new Vector3(1, 4, 1));
             Components.Add(m3d);
 	        
-            // create 10 clouds
-	        Cloud cloud = new Cloud(this, "cloud", "cloudV3", 10);
+            // create 2 clouds
+	        Cloud cloud = new Cloud(this, "cloud", "cloudV3", 2);
 	        
             // Set initial camera and projection matrix
 	        setCamera(1);  // select the "whole stage" camera

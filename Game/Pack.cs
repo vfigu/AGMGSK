@@ -40,6 +40,7 @@ namespace AGMGSKv9 {
 public class Pack : MovableModel3D {   
    Object3D leader;
 
+
 /// <summary>
 /// Construct a pack with an Object3D leader
 /// </summary>
@@ -77,16 +78,28 @@ public class Pack : MovableModel3D {
    public override void Update(GameTime gameTime) {
         //Original implementation
         // if (leader == null) need to determine "virtual leader from members"
-        float angle = 0.3f;
+        float angle = 0.5f;
         foreach (Object3D obj in instance) {
-         obj.Yaw = 0.0f;
-         // change direction 4 time a second  0.07 = 4/60
-           if ( random.NextDouble() < 0.07) {
-              if (random.NextDouble() < 0.5) obj.Yaw -= angle; // turn left
-              else  obj.Yaw += angle; // turn right
-           }
-         obj.updateMovableObject();
-         stage.setSurfaceHeight(obj);
+                float distance = Vector3.Distance(
+                    new Vector3(Leader.Translation.X, 0, Leader.Translation.Z),
+                    new Vector3(obj.Translation.X, 0, obj.Translation.Z));
+                //System.Diagnostics.Debug.WriteLine("Distance from Leader: " + distance);
+                if (stage.PercentPack == 0)
+                {
+                    RandomWalk(obj, angle);
+                }
+                else if(stage.PercentPack == 33)
+                {
+                    PackLightly(obj, angle, distance);
+                }
+         //obj.Yaw = 0.0f;
+         //// change direction 4 time a second  0.07 = 4/60
+         //  if ( random.NextDouble() < 0.07) {
+         //       if (random.NextDouble() < 0.5) obj.Yaw -= angle; // turn left
+         //       else  obj.Yaw += angle; // turn right
+         //  }
+         //obj.updateMovableObject();
+         //stage.setSurfaceHeight(obj);
          }
       base.Update(gameTime);  // MovableMesh's Update(); 
       }
@@ -96,5 +109,120 @@ public class Pack : MovableModel3D {
       get { return leader; }
       set { leader = value; }}
 
-   }
+   public void RandomWalk(Object3D obj,float angle){
+      obj.Yaw = 0.0f;
+      // change direction 4 time a second  0.07 = 4/60
+        if (random.NextDouble() < 0.07){
+             if (random.NextDouble() < 0.5) obj.Yaw -= angle; // turn left
+             else obj.Yaw += angle; // turn right
+      }
+      obj.updateMovableObject();
+      stage.setSurfaceHeight(obj);
+      }
+   public void PackLightly(Object3D obj, float angle, float distance){
+            obj.Yaw = 0.0f;
+            // change direction 4 time a second  0.07 = 4/60
+            if (random.NextDouble() < 0.04)
+            {
+                if (distance >= 24000.0f)                                                         //Cohesion Range
+                    obj.turnToFace(Leader.Translation);
+                else if (distance < 24000.0f && distance >= 18000.0f) {                           //between alignment and coheasion Range
+                    if (random.NextDouble() > 0.9)//10% split
+                    {
+                        if (random.NextDouble() < 0.6)
+                        {//6% Coheasion
+                            obj.turnToFace(Leader.Translation);
+                            System.Diagnostics.Debug.WriteLine("Distance from Leader: " + distance + " 6 % Coheasion");
+                        }
+                        else { 
+                            obj.Yaw = Leader.Yaw;//4% Alignment
+                        System.Diagnostics.Debug.WriteLine("Distance from Leader: " + distance + " 4 % Align");
+                        }
+                    }
+                    else//90% random
+                    {
+                        if (random.NextDouble() < 0.5) {
+                        
+                            obj.Yaw -= angle; // turn left
+                            //System.Diagnostics.Debug.WriteLine("90%Random left");
+                        }
+                        else { 
+                            obj.Yaw += angle; // turn right
+                            //System.Diagnostics.Debug.WriteLine("90%Random Right");
+                        }
+                    }
+                }
+                else if (distance < 18000.0f && distance >= 12000.0f){                            //Alignment Range
+                    if (random.NextDouble() < 0.3)
+                    {
+                        if (random.NextDouble() < 0.7)
+                        {
+                            obj.Yaw = Leader.Yaw;
+                            System.Diagnostics.Debug.WriteLine("Distance from Leader: " + distance + " 15% Align" + Leader.Forward);
+                        }
+                        else
+                        {
+                            obj.turnToFace(Leader.Translation);
+                            System.Diagnostics.Debug.WriteLine("Distance from Leader: " + distance + " 15 % Coheasion");
+                        }
+                    }
+                    else
+                    {
+                        if (random.NextDouble() < 0.5)
+                        {
+
+                            obj.Yaw -= angle; // turn left
+                            //System.Diagnostics.Debug.WriteLine("90%Random left");
+                        }
+                        else
+                        {
+                            obj.Yaw += angle; // turn right
+                            //System.Diagnostics.Debug.WriteLine("90%Random Right");
+                        }
+                    }
+                }
+                else if (distance < 12000.0f && distance > 6000.0f)                             //Between Separation and Allignment
+                {
+                    if (random.NextDouble() < 0.3)//30% Separate
+                    {
+                        obj.turnToFace(Leader.Translation);
+                        obj.Yaw += (float)Math.PI;
+                        System.Diagnostics.Debug.WriteLine("Distance from Leader: " + distance + " 30% Separate");
+                    }
+                    else//70%
+                    {
+                        if (random.NextDouble() < 0.5)//35%Align
+                        {
+                            obj.Yaw = Leader.Yaw;
+                            //obj.Yaw += (float)Math.PI;
+                            System.Diagnostics.Debug.WriteLine("Distance from Leader: " + distance + " 25% Align" + Leader.Forward);
+
+                        }
+                        else//35%
+                        {
+                            if (random.NextDouble() < 0.5)//17%left
+                            {
+
+                                obj.Yaw -= angle; // turn left
+                                                  //System.Diagnostics.Debug.WriteLine("90%Random left");
+                            }
+                            else//17% right
+                            {
+                                obj.Yaw += angle; // turn right
+                                                  //System.Diagnostics.Debug.WriteLine("90%Random Right");
+                            }
+                        }
+                    }
+                }
+                else if (distance <= 6000) {                                                      //Separation Range
+                    obj.turnToFace(Leader.Translation);
+                    obj.Yaw += (float)Math.PI;
+                    System.Diagnostics.Debug.WriteLine("Distance from Leader: " + distance + " Separate");
+                }
+            }
+            obj.updateMovableObject();
+            stage.setSurfaceHeight(obj);
+        }
+    }
+
 }
