@@ -39,8 +39,9 @@ namespace AGMGSKv9 {
 /// </summary>
 public class Pack : MovableModel3D {   
    Object3D leader;
-   int[] packZones = new int[4] { 6000, 12000, 18000, 24000 };
-
+   //integer array to hold pack zone values, initialize to 0 ?? DLP
+   float[] packZones = new float[4] { 6000.0f, 12000.0f, 18000.0f, 24000.0f };
+   
 /// <summary>
 /// Construct a pack with an Object3D leader
 /// </summary>
@@ -52,7 +53,7 @@ public class Pack : MovableModel3D {
    public Pack(Stage theStage, string label, string meshFile, int nDogs, int xPos, int zPos, Object3D theLeader, float boundingMultiplier = 1.05f)
       : base(theStage, label, meshFile, boundingMultiplier) {
       isCollidable = true;
-		random = new Random();
+      random = new Random();
       leader = theLeader;
 		int spacing = stage.Spacing;
 		// initial vertex offset of dogs around (xPos, zPos)
@@ -69,6 +70,37 @@ public class Pack : MovableModel3D {
 			              new Vector3(scale, scale, scale));
         }
       }
+    //Based on stage.PercentPack adjust packing boundries. DLP
+    public void SetPackBoundries (int setPack)
+    {
+        switch(setPack)
+        {
+            case 33:
+                System.Diagnostics.Debug.WriteLine("Setting pack bounds: Percent Pack 33");
+                SeparationUpper = 6000.0f;
+                AlignLower = 12000.0f;
+                AlignUpper = 18000.0f;
+                CoheasionLower = 24000.0f;
+                break;
+            case 66:
+                System.Diagnostics.Debug.WriteLine("Setting pack bounds: Percent Pack 66");
+                SeparationUpper = 4500.0f;
+                AlignLower = 9000.0f;
+                AlignUpper = 13500.0f;
+                CoheasionLower = 18000.0f;
+                break;
+            case 99:
+                System.Diagnostics.Debug.WriteLine("Setting pack bounds: Percent Pack 99");
+                SeparationUpper = 3000.0f;
+                AlignLower = 6000.0f;
+                AlignUpper = 9000.0f;
+                CoheasionLower = 12000.0f;
+                break;
+            default:
+                Console.WriteLine("Default case No pack assignment.");
+                break;
+        }
+    }
 
    /// <summary>
    /// Each pack member's orientation matrix will be updated.
@@ -78,19 +110,23 @@ public class Pack : MovableModel3D {
    public override void Update(GameTime gameTime) {
         //Original implementation
         // if (leader == null) need to determine "virtual leader from members"
+        //Adjust turning angle to .5 radians ~ 28 degrees. DLP
         float angle = 0.5f;
+        //Call to assign packing boundries based on PercentPack. DLP
+        SetPackBoundries(stage.PercentPack);
         foreach (Object3D obj in instance) {
+                //Calculate distance from this pack animal to the leader. DLP
                 float distance = Vector3.Distance(
                     new Vector3(Leader.Translation.X, 0, Leader.Translation.Z),
                     new Vector3(obj.Translation.X, 0, obj.Translation.Z));
-                //System.Diagnostics.Debug.WriteLine("Distance from Leader: " + distance);
+                //Based on assigned packing percentage, call the packing function or wonder. DLP
                 if (stage.PercentPack == 0)
                 {
                     RandomWalk(obj, angle);
                 }
-                else if(stage.PercentPack == 33)
+                else //change to else. DLP
                 {
-                    PackLightly(obj, angle, distance);
+                    PackAroundLeader(obj, angle, distance);//change to PackAroundLeader(obj, angle, distance). DLP
                 }
          //obj.Yaw = 0.0f;
          //// change direction 4 time a second  0.07 = 4/60
@@ -105,9 +141,7 @@ public class Pack : MovableModel3D {
       }
      //end of original implementation
 
-   public Object3D Leader {
-      get { return leader; }
-      set { leader = value; }}
+   
 
    public void RandomWalk(Object3D obj,float angle){
       obj.Yaw = 0.0f;
@@ -119,14 +153,15 @@ public class Pack : MovableModel3D {
       obj.updateMovableObject();
       stage.setSurfaceHeight(obj);
       }
-   public void PackLightly(Object3D obj, float angle, float distance){
+   //
+   public void PackAroundLeader(Object3D obj, float angle, float distance){
             obj.Yaw = 0.0f;
             // change direction 4 time a second  0.07 = 4/60
             if (random.NextDouble() < 0.04)
             {
-                if (distance >= 24000.0f)                                                         //Cohesion Range
+                if (distance >= CoheasionLower)                                                         //Cohesion Range
                     obj.turnToFace(Leader.Translation);
-                else if (distance < 24000.0f && distance >= 18000.0f) {                           //between alignment and coheasion Range
+                else if (distance < CoheasionLower && distance >= AlignUpper) {                           //between alignment and coheasion Range
                     if (random.NextDouble() > 0.9)//10% split
                     {
                         if (random.NextDouble() < 0.6)
@@ -152,7 +187,7 @@ public class Pack : MovableModel3D {
                         }
                     }
                 }
-                else if (distance < 18000.0f && distance >= 12000.0f){                            //Alignment Range
+                else if (distance < AlignUpper && distance >= AlignLower){                            //Alignment Range
                     if (random.NextDouble() < 0.3)
                     {
                         if (random.NextDouble() < 0.7)
@@ -181,7 +216,7 @@ public class Pack : MovableModel3D {
                         }
                     }
                 }
-                else if (distance < 12000.0f && distance > 6000.0f)                             //Between Separation and Allignment
+                else if (distance < AlignLower && distance > SeparationUpper)                             //Between Separation and Allignment
                 {
                     if (random.NextDouble() < 0.3)//30% Separate
                     {
@@ -214,7 +249,7 @@ public class Pack : MovableModel3D {
                         }
                     }
                 }
-                else if (distance <= 6000) {                                                      //Separation Range
+                else if (distance <= SeparationUpper) {                                                      //Separation Range
                     obj.turnToFace(Leader.Translation);
                     obj.Yaw += (float)Math.PI;
                     System.Diagnostics.Debug.WriteLine("Distance from Leader: " + distance + " Separate");
@@ -222,6 +257,35 @@ public class Pack : MovableModel3D {
             }
             obj.updateMovableObject();
             stage.setSurfaceHeight(obj);
+        }
+        public Object3D Leader
+        {
+            get { return leader; }
+            set { leader = value; }
+        }
+
+        public float CoheasionLower
+        {
+            get { return packZones[3]; }
+            set { packZones[3] = value; }
+        }
+
+        public float AlignUpper
+        {
+            get { return packZones[2]; }
+            set { packZones[2] = value; }
+        }
+
+        public float AlignLower
+        {
+            get { return packZones[1]; }
+            set { packZones[1] = value; }
+        }
+
+        public float SeparationUpper
+        {
+            get { return packZones[0]; }
+            set { packZones[0] = value; }
         }
     }
 
