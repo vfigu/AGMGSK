@@ -39,8 +39,8 @@ namespace AGMGSKv9 {
 /// </summary>
 public class Pack : MovableModel3D {   
    Object3D leader;
-   //integer array to hold pack zone values, initialize to 0 ?? DLP
-   float[] packZones = new float[4] { 6000.0f, 12000.0f, 18000.0f, 24000.0f };
+   //Array to hold pack zone values. DLP
+   float[] packZones = new float[4] { 0.0f, 0.0f, 0.0f, 0.0f };
    
 /// <summary>
 /// Construct a pack with an Object3D leader
@@ -76,28 +76,24 @@ public class Pack : MovableModel3D {
         switch(setPack)
         {
             case 33:
-                System.Diagnostics.Debug.WriteLine("Setting pack bounds: Percent Pack 33");
                 SeparationUpper = 6000.0f;
                 AlignLower = 12000.0f;
                 AlignUpper = 18000.0f;
                 CoheasionLower = 24000.0f;
                 break;
             case 66:
-                System.Diagnostics.Debug.WriteLine("Setting pack bounds: Percent Pack 66");
                 SeparationUpper = 4500.0f;
                 AlignLower = 9000.0f;
                 AlignUpper = 13500.0f;
                 CoheasionLower = 18000.0f;
                 break;
             case 99:
-                System.Diagnostics.Debug.WriteLine("Setting pack bounds: Percent Pack 99");
                 SeparationUpper = 3000.0f;
                 AlignLower = 6000.0f;
                 AlignUpper = 9000.0f;
                 CoheasionLower = 12000.0f;
                 break;
             default:
-                Console.WriteLine("Default case No pack assignment.");
                 break;
         }
     }
@@ -108,156 +104,119 @@ public class Pack : MovableModel3D {
    /// Supports leaderless and leader based "flocking" 
    /// </summary>      
    public override void Update(GameTime gameTime) {
-        //Original implementation
         // if (leader == null) need to determine "virtual leader from members"
         //Adjust turning angle to .5 radians ~ 28 degrees. DLP
         float angle = 0.5f;
         //Call to assign packing boundries based on PercentPack. DLP
         SetPackBoundries(stage.PercentPack);
         foreach (Object3D obj in instance) {
-                //Calculate distance from this pack animal to the leader. DLP
-                float distance = Vector3.Distance(
-                    new Vector3(Leader.Translation.X, 0, Leader.Translation.Z),
-                    new Vector3(obj.Translation.X, 0, obj.Translation.Z));
-                //Based on assigned packing percentage, call the packing function or wonder. DLP
-                if (stage.PercentPack == 0)
-                {
-                    RandomWalk(obj, angle);
-                }
-                else //change to else. DLP
-                {
-                    PackAroundLeader(obj, angle, distance);//change to PackAroundLeader(obj, angle, distance). DLP
-                }
-         //obj.Yaw = 0.0f;
-         //// change direction 4 time a second  0.07 = 4/60
-         //  if ( random.NextDouble() < 0.07) {
-         //       if (random.NextDouble() < 0.5) obj.Yaw -= angle; // turn left
-         //       else  obj.Yaw += angle; // turn right
-         //  }
-         //obj.updateMovableObject();
-         //stage.setSurfaceHeight(obj);
-         }
-      base.Update(gameTime);  // MovableMesh's Update(); 
-      }
-     //end of original implementation
-
+            //Calculate distance from this pack member to the leader. DLP
+            float distance = Vector3.Distance(
+                new Vector3(Leader.Translation.X, 0, Leader.Translation.Z),
+                new Vector3(obj.Translation.X, 0, obj.Translation.Z));
+            //Based on assigned packing percentage, call the packing function or wander. DLP
+            if (stage.PercentPack == 0)
+                RandomWalk(obj, angle);
+            else
+                PackAroundLeader(obj, angle, distance);
+        }
+        base.Update(gameTime);  // MovableMesh's Update(); 
+   }
    
-
+   //Turned original implementation into a function. DLP
    public void RandomWalk(Object3D obj,float angle){
-      obj.Yaw = 0.0f;
-      // change direction 4 time a second  0.07 = 4/60
-        if (random.NextDouble() < 0.07){
-             if (random.NextDouble() < 0.5) obj.Yaw -= angle; // turn left
-             else obj.Yaw += angle; // turn right
-      }
-      obj.updateMovableObject();
-      stage.setSurfaceHeight(obj);
-      }
-   //
+       obj.Yaw = 0.0f;
+       // change direction 4 time a second  0.07 = 4/60
+       if (random.NextDouble() < 0.07){
+           if (random.NextDouble() < 0.5)
+               obj.Yaw -= angle; // turn left
+           else
+               obj.Yaw += angle; // turn right
+       }
+       obj.updateMovableObject();
+       stage.setSurfaceHeight(obj);
+   }
+   
    public void PackAroundLeader(Object3D obj, float angle, float distance){
-            obj.Yaw = 0.0f;
-            // change direction 4 time a second  0.07 = 4/60
-            if (random.NextDouble() < 0.04)
-            {
-                if (distance >= CoheasionLower)                                                         //Cohesion Range
-                    obj.turnToFace(Leader.Translation);
-                else if (distance < CoheasionLower && distance >= AlignUpper) {                           //between alignment and coheasion Range
-                    if (random.NextDouble() > 0.9)//10% split
-                    {
-                        if (random.NextDouble() < 0.6)
-                        {//6% Coheasion
-                            obj.turnToFace(Leader.Translation);
-                            System.Diagnostics.Debug.WriteLine("Distance from Leader: " + distance + " 6 % Coheasion");
-                        }
-                        else { 
-                            obj.Yaw = Leader.Yaw;//4% Alignment
-                        System.Diagnostics.Debug.WriteLine("Distance from Leader: " + distance + " 4 % Align");
-                        }
-                    }
-                    else//90% random
-                    {
-                        if (random.NextDouble() < 0.5) {
-                        
-                            obj.Yaw -= angle; // turn left
-                            //System.Diagnostics.Debug.WriteLine("90%Random left");
-                        }
-                        else { 
-                            obj.Yaw += angle; // turn right
-                            //System.Diagnostics.Debug.WriteLine("90%Random Right");
-                        }
-                    }
+        obj.Yaw = 0.0f;
+        // change direction 4 time a second  0.07 = 4/60
+        if (random.NextDouble() < 0.04)
+        {
+            //Cohesion Range. DLP
+            if (distance >= CoheasionLower)
+                obj.turnToFace(Leader.Translation);
+            //Between alignment and cohesion ranges. DLP
+            else if (distance < CoheasionLower && distance >= AlignUpper) {
+                if (random.NextDouble() > 0.9)
+                //6% Coheasion 4% Alignment.
+                {
+                    if (random.NextDouble() < 0.6)
+                        obj.turnToFace(Leader.Translation);
+                    else
+                        obj.Yaw = Leader.Yaw;
                 }
-                else if (distance < AlignUpper && distance >= AlignLower){                            //Alignment Range
-                    if (random.NextDouble() < 0.3)
-                    {
-                        if (random.NextDouble() < 0.7)
-                        {
-                            obj.Yaw = Leader.Yaw;
-                            System.Diagnostics.Debug.WriteLine("Distance from Leader: " + distance + " 15% Align" + Leader.Forward);
-                        }
-                        else
-                        {
-                            obj.turnToFace(Leader.Translation);
-                            System.Diagnostics.Debug.WriteLine("Distance from Leader: " + distance + " 15 % Coheasion");
-                        }
-                    }
+                //90% Random.
+                else
+                {
+                    if (random.NextDouble() < 0.5)
+                        obj.Yaw -= angle;
+                    else
+                        obj.Yaw += angle;
+                }
+            }
+            //Alignment Range. DLP
+            else if (distance < AlignUpper && distance >= AlignLower){
+                //21% Allocation to Alignment and 9% Cohesion.
+                if (random.NextDouble() < 0.3)
+                {
+                    if (random.NextDouble() < 0.7)
+                        obj.Yaw = Leader.Yaw;
+                    else
+                        obj.turnToFace(Leader.Translation);
+                }
+                //70% Random
+                else
+                {
+                    if (random.NextDouble() < 0.5)
+                        obj.Yaw -= angle;
+                    else
+                        obj.Yaw += angle;
+                }
+            }
+            //Between separation and alignment. DLP
+            else if (distance < AlignLower && distance > SeparationUpper)
+            {
+                //30% Separation.
+                if (random.NextDouble() < 0.3)
+                {
+                    obj.turnToFace(Leader.Translation);
+                    obj.Yaw += (float)Math.PI;
+                }
+                //35% Alignment 35% Random.
+                else
+                {
+                    if (random.NextDouble() < 0.5)
+                        obj.Yaw = Leader.Yaw;
                     else
                     {
                         if (random.NextDouble() < 0.5)
-                        {
-
-                            obj.Yaw -= angle; // turn left
-                            //System.Diagnostics.Debug.WriteLine("90%Random left");
-                        }
+                            obj.Yaw -= angle;
                         else
-                        {
-                            obj.Yaw += angle; // turn right
-                            //System.Diagnostics.Debug.WriteLine("90%Random Right");
-                        }
+                            obj.Yaw += angle;
                     }
-                }
-                else if (distance < AlignLower && distance > SeparationUpper)                             //Between Separation and Allignment
-                {
-                    if (random.NextDouble() < 0.3)//30% Separate
-                    {
-                        obj.turnToFace(Leader.Translation);
-                        obj.Yaw += (float)Math.PI;
-                        System.Diagnostics.Debug.WriteLine("Distance from Leader: " + distance + " 30% Separate");
-                    }
-                    else//70%
-                    {
-                        if (random.NextDouble() < 0.5)//35%Align
-                        {
-                            obj.Yaw = Leader.Yaw;
-                            //obj.Yaw += (float)Math.PI;
-                            System.Diagnostics.Debug.WriteLine("Distance from Leader: " + distance + " 25% Align" + Leader.Forward);
-
-                        }
-                        else//35%
-                        {
-                            if (random.NextDouble() < 0.5)//17%left
-                            {
-
-                                obj.Yaw -= angle; // turn left
-                                                  //System.Diagnostics.Debug.WriteLine("90%Random left");
-                            }
-                            else//17% right
-                            {
-                                obj.Yaw += angle; // turn right
-                                                  //System.Diagnostics.Debug.WriteLine("90%Random Right");
-                            }
-                        }
-                    }
-                }
-                else if (distance <= SeparationUpper) {                                                      //Separation Range
-                    obj.turnToFace(Leader.Translation);
-                    obj.Yaw += (float)Math.PI;
-                    System.Diagnostics.Debug.WriteLine("Distance from Leader: " + distance + " Separate");
                 }
             }
-            obj.updateMovableObject();
-            stage.setSurfaceHeight(obj);
+            //Separation Range. DLP
+            else if (distance <= SeparationUpper)
+            {
+                obj.turnToFace(Leader.Translation);
+                obj.Yaw += (float)Math.PI;
+            }
         }
+        obj.updateMovableObject();
+        stage.setSurfaceHeight(obj);
+        }
+        //Accessors for pack zone boundaries. DLP
         public Object3D Leader
         {
             get { return leader; }
@@ -288,5 +247,4 @@ public class Pack : MovableModel3D {
             set { packZones[0] = value; }
         }
     }
-
 }
