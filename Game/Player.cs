@@ -18,7 +18,6 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-
 #region Using Statements
 using System;
 using System.IO;  // needed for trace()'s fout
@@ -28,9 +27,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 #endregion
 
-namespace AGMGSKv9
-{
-
+namespace AGMGSKv9 {
     /// <summary>
     /// Represents the user / player interacting with the stage. 
     /// The Update(Gametime) handles both user keyboard and gamepad controller input.
@@ -42,8 +39,7 @@ namespace AGMGSKv9
     /// </summary>
 
     // Added variables to adjust player movement speed
-    public class Player : Agent
-    {
+    public class Player : Agent {
         private KeyboardState oldKeyboardState;
         private int rotate;
         private float angle;
@@ -54,8 +50,8 @@ namespace AGMGSKv9
         public Player(Stage theStage, string label, Vector3 pos, Vector3 orientAxis,
         float radians, string meshFile, string objOfInterest = null, List<Model3D> objList = null, 
         float boundingMultiplier = 1.05f, int speed = 1, int turnspeed = 1)
-        : base(theStage, label, pos, orientAxis, radians, meshFile, objOfInterest, objList, boundingMultiplier)
-        {  // change names for on-screen display of current camera
+        : base(theStage, label, pos, orientAxis, radians, meshFile, objOfInterest, objList, boundingMultiplier) {
+            // change names for on-screen display of current camera
             first.Name = "First";
             follow.Name = "Follow";
             above.Name = "Above";
@@ -77,8 +73,7 @@ namespace AGMGSKv9
         /// otherwise assume and use keyboard.
         /// </summary>
         /// <param name="gameTime"></param>
-        public override void Update(GameTime gameTime)
-        {
+        public override void Update(GameTime gameTime) {
             KeyboardState keyboardState = Keyboard.GetState();
             if (keyboardState.IsKeyDown(Keys.R) && !oldKeyboardState.IsKeyDown(Keys.R))
                 agentObject.Orientation = initialOrientation;

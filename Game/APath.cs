@@ -34,73 +34,48 @@ namespace AGMGSKv9 {
         }
 
         // returns the NavNode of the treasure that is closest to the agent 
-        public NavNode Closest { 
-            get {
-                Model3D closest = null;
-                int X = (int)agentObject.X / spacing;
-                int Z = (int)agentObject.Z / spacing;
-                int x, z;
+        public NavNode ClosestNode(float radius)
+        {
+            NavNode node;
+            Object3D closest = ClosestObject(radius);
+            if (closest == null)
+                return null;
 
-                double A = 0;
-                double B = 0;
-                double C = 0;
-                double smallest = -1;
-            
-                for(int i = 0; i < treasures.Count; i++) {
-                    x = (int)treasures[i].Instance[0].X / spacing;
-                    z = (int)treasures[i].Instance[0].Z / spacing;
-                    A = Math.Pow(x-X, 2);
-                    B = Math.Pow(z-Z, 2);
-                    C = Math.Sqrt(A + B);
-
-                    if(C < smallest || smallest < 0) {
-                        smallest = C;
-                        closest = treasures[i];
-                    }
-                }
-
-                NavNode node = new NavNode(new Vector3(closest.Instance[0].X,
-                    stage.Terrain.surfaceHeight((int)closest.Instance[0].X / spacing, 
-                    (int)closest.Instance[0].Y / spacing), closest.Instance[0].Z),
-                    NavNode.NavNodeEnum.WAYPOINT);
-                return node;
-            }
+            node = new NavNode(new Vector3(closest.X,
+                stage.Terrain.surfaceHeight((int)closest.X / spacing, 
+                (int)closest.Y / spacing), closest.Z),
+                NavNode.NavNodeEnum.WAYPOINT);
+            return node;
         }
+        public Object3D ClosestObject(float radius)
+        {
+            Object3D closest = null;
+            int X = (int)agentObject.X / spacing;
+            int Z = (int)agentObject.Z / spacing;
+            int x, z;
 
-        // not sure why I put these two of the same function
-        // I was gonna modify one to return something slightly different
-        // perhaps the Vector3?
-        private NavNode Goal { 
-            get {
-                Model3D closest = null;
-                int X = (int)agentObject.X / spacing;
-                int Z = (int)agentObject.Z / spacing;
-                int x, z;
+            double A = 0;
+            double B = 0;
+            double C = 0;
+            double smallest = -1;
 
-                double A = 0;
-                double B = 0;
-                double C = 0;
-                double smallest = -1;
-            
-                for(int i = 0; i < treasures.Count; i++) {
-                    x = (int)treasures[i].Instance[0].X / spacing;
-                    z = (int)treasures[i].Instance[0].Z / spacing;
-                    A = Math.Pow(x-X, 2);
-                    B = Math.Pow(z-Z, 2);
-                    C = Math.Sqrt(A + B);
+            for (int i = 0; i < treasures.Count; i++)
+            {
+                x = (int)treasures[i].Instance[0].X / spacing;
+                z = (int)treasures[i].Instance[0].Z / spacing;
+                A = Math.Pow(x - X, 2);
+                B = Math.Pow(z - Z, 2);
+                C = Math.Sqrt(A + B);
 
-                    if(C < smallest || smallest < 0) {
-                        smallest = C;
-                        closest = treasures[i];
-                    }
+                if (C < smallest || smallest < 0) {
+                    smallest = C;
+                    closest = treasures[i].Instance[0];
                 }
-
-                NavNode node = new NavNode(new Vector3(closest.Instance[0].X / spacing,
-                    stage.Terrain.surfaceHeight((int)closest.Instance[0].X / spacing, 
-                    (int)closest.Instance[0].Z / spacing), closest.Instance[0].Z / spacing),
-                    NavNode.NavNodeEnum.WAYPOINT);
-                return node;
             }
+
+            if (smallest * spacing > radius && radius > 0)
+                return null;
+            return closest;
         }
 
         // helper functions

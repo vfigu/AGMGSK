@@ -7,10 +7,8 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 #endregion
 
-namespace AGMGSKv9
-{
-    class Treasure : Model3D
-    {
+namespace AGMGSKv9 {
+    class Treasure : Model3D {
         public string altMesh;
 
         public Treasure(Stage theStage, string label, string meshFile, string altMeshFile = null, 
@@ -30,16 +28,15 @@ namespace AGMGSKv9
                               new Vector3(scale, scale, scale));
         }
 
-        public override void removeObject(Object3D obj3d)
-        {
+        public override void removeObject(Object3D obj3d) {
             obj3d.model.AlterMesh(altMesh);
             this.removeCollidable(obj3d);
             //this.removeInstance(obj3d);
         }
         /// <summary>
-        /// Each pack member's orientation matrix will be updated.
-        /// Distribution has pack of dogs moving randomly.  
-        /// Supports leaderless and leader based "flocking" 
+        /// Model made for collectable treasures;
+        /// when collected object can be removed making it uncollidable
+        /// and thus collected, allowing you to change the mesh
         /// </summary>      
     }
 }

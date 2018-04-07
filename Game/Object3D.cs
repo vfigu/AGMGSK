@@ -18,8 +18,6 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-
-
 #region Using Statements
 using System;
 using System.IO;  // needed for trace()'s fout
@@ -112,7 +110,7 @@ namespace AGMGSKv9 {
             orientation *= Matrix.CreateFromAxisAngle(orientAxis, radians);
             orientation *= Matrix.CreateTranslation(position);
             scaleObjectBoundingSphere();
-            }
+        }
 
         // Properties
 
@@ -222,7 +220,7 @@ namespace AGMGSKv9 {
 					    Name, ObjectBoundingSphereRadius, obj3d.Name, obj3d.ObjectBoundingSphereRadius,
 					    ObjectBoundingSphereRadius + obj3d.ObjectBoundingSphereRadius, distance));
 				    return obj3d; 
-				    }
+				}
 			}
 		    return null;
 		}
@@ -240,11 +238,11 @@ namespace AGMGSKv9 {
         private void scaleObjectBoundingSphere() {
             // if (scales.X >= scales.Y && scales.X >= scales.Z) 
 	        if (scales.X >= scales.Z)
-            objectBoundingSphereRadius = model.BoundingSphereRadius * scales.X;
+                objectBoundingSphereRadius = model.BoundingSphereRadius * scales.X;
             //else if (scales.Y >= scales.X && scales.Y >= scales.Z) 
             //   objectBoundingSphereRadius = model.BoundingSphereRadius * scales.Y;
             else objectBoundingSphereRadius = model.BoundingSphereRadius * scales.Z;
-            }
+        }
 
 
         /// <summary>
@@ -272,7 +270,8 @@ namespace AGMGSKv9 {
                 toTarget.X += 0.05f;
                 toTarget.Z += 0.05f;
                 toTarget.Normalize();
-                } 
+            } 
+
             // determine axis for rotation
 		    axis = Vector3.Cross(toTarget, Forward);  // order of arguments maters
             axis.Normalize();
@@ -290,8 +289,8 @@ namespace AGMGSKv9 {
 				    // stage.Trace = string.Format("error:  Object3D.turnToFace() radian is NaN, aCosDot = {0}, axis direction = {1}, toTarget ({2}, {3}, {4}), forward ({5}, {6}, {7})",
 				    //		aCosDot, toTarget.X, toTarget.Y, toTarget.Z, Forward.X, Forward.Y, Forward.Z);
                 return;
-                }
-                else {  // valid radian perform transformation
+            }
+            else {  // valid radian perform transformation
                 // save location, translate to origin, rotate, translate back to location
                 Vector3 objectLocation = Translation;
                 orientation *= Matrix.CreateTranslation(-1 * objectLocation);
@@ -299,8 +298,8 @@ namespace AGMGSKv9 {
                 orientation *= Matrix.CreateFromAxisAngle(axis, (float) radian);
                 orientation.Up = Vector3.Up;  // correct for flipped from negative axis of rotation
                 orientation *= Matrix.CreateTranslation(objectLocation);
-                }
             }
+        }
 
 	    /// <summary>
 	    /// Rotate 1 degree towards the target

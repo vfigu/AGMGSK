@@ -9,8 +9,7 @@ using Microsoft.Xna.Framework.Input;
 
 namespace AGMGSKv9
 {
-    class TreasureMaker
-    {
+    class TreasureMaker {
         public int count = 1;
         public int MAX = 4;
         private string name;
@@ -18,8 +17,7 @@ namespace AGMGSKv9
         private int[,] locations = { {500, 25}, {447, 453}, {150, 460}, {330, 320}, {10, 10} };
 
         public TreasureMaker(Stage theStage, string label, string meshFile, string altMeshFile = null,
-            float boundingMultiplier = 1.05f, int nTreasures = 1)
-        {
+            float boundingMultiplier = 1.05f, int nTreasures = 1) {
             name = label;
 
             if (nTreasures > 1 && nTreasures <= MAX) count = nTreasures;
@@ -31,13 +29,11 @@ namespace AGMGSKv9
                     meshFile, altMeshFile, locations[i,0], locations[i,1], boundingMultiplier));
         }
 
-        public string Name
-        {
+        public string Name {
             get { return name; }
         }
 
-        public List<Model3D> Treasures
-        {
+        public List<Model3D> Treasures {
             get { return treasures; }
             set { treasures = value; }
         }

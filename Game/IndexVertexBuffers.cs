@@ -29,35 +29,35 @@ using Microsoft.Xna.Framework.Input;
 #endregion
 
 namespace AGMGSKv9 {
-/// <summary>
-/// IndexVertexBuffers defines variables and properties shared
-/// by all indexed-vertex meshes.
-/// Since the vertex type can change, vertices should be defined
-/// in subclasses.
-/// </summary>
-public abstract class IndexVertexBuffers : DrawableGameComponent {
-   protected Stage stage;
-   protected string name;
-   protected int range, nVertices, nIndices;
-   protected VertexBuffer vb = null;
-   protected IndexBuffer ib = null;
-   protected int[] indices;  // indexes for IndexBuffer -- define face vertice indexes clockwise 
+    /// <summary>
+    /// IndexVertexBuffers defines variables and properties shared
+    /// by all indexed-vertex meshes.
+    /// Since the vertex type can change, vertices should be defined
+    /// in subclasses.
+    /// </summary>
 
-   public IndexVertexBuffers(Stage theStage, string label) : base (theStage)  {  
-      stage = theStage; 
-      name = label;
-      }
+    public abstract class IndexVertexBuffers : DrawableGameComponent {
+        protected Stage stage;
+        protected string name;
+        protected int range, nVertices, nIndices;
+        protected VertexBuffer vb = null;
+        protected IndexBuffer ib = null;
+        protected int[] indices;  // indexes for IndexBuffer -- define face vertice indexes clockwise 
 
-   // Properties
+        public IndexVertexBuffers(Stage theStage, string label) : base (theStage)  {  
+            stage = theStage; 
+            name = label;
+        }
 
-   public VertexBuffer VB {
-      get { return vb; }
-      set { vb = value; }
-      }
+        // Properties
+        public VertexBuffer VB {
+            get { return vb; }
+            set { vb = value; }
+        }
 
-   public IndexBuffer IB {
-      get { return ib; }
-      set { ib = value; }
-      }
-   }
+        public IndexBuffer IB {
+            get { return ib; }
+            set { ib = value; }
+        }
+    }
 }

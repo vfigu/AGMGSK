@@ -18,7 +18,6 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-
 #region Using Statements
 using System;
 using System.IO;  // needed for trace()'s fout
@@ -110,7 +109,6 @@ namespace AGMGSKv9 {
 		    stage = theStage;
 		    done = false;
             int spacing = stage.Spacing;
-		    int x, z;
 
             // make a simple path, show how to set the type of the NavNode outside of construction.
 		    node = new List<NavNode>();
@@ -208,8 +206,7 @@ namespace AGMGSKv9 {
             Random random = new Random();
             nextNode = random.Next(0, node.Count-1);
         }
-        public void Random()
-        {
+        public void Random() {
             Random random = new Random();
             if(random.Next(0, 100) > 50)
                 node.Reverse();
@@ -236,8 +233,7 @@ namespace AGMGSKv9 {
                     mesh.Draw();
                     stage.setBlendingState(false);
                 }
-                }
             }
-      
+        }
     }
 }

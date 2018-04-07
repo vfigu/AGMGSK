@@ -416,7 +416,7 @@ namespace AGMGSKv9 {
             inspector.setInfo(1, "Press keyboard for input (not case sensitive 'H' || 'h')   'Esc' to quit");
             inspector.setInfo(2, "Inspector toggles:  'H' help or info   'M'  matrix or info   'I'  displays next info pane.");
             inspector.setInfo(3, "Arrow keys move the player in, out, left, or right.  'R' resets player to initial orientation.");
-            inspector.setInfo(4, "Stage toggles:  'B' bounding spheres, 'C' || 'X' cameras, 'T' fixed updates");
+            inspector.setInfo(4, "Stage toggles:  'B' bounding spheres, 'C' || 'X' cameras, 'T' fixed updates, 'N' treasure hunting, 'P' flocking");
             
             // initialize empty info strings
             for (int i = 5; i < 20; i++) inspector.setInfo(i, "  ");
@@ -466,12 +466,12 @@ namespace AGMGSKv9 {
 	        
             //  ------ The wall and pack are required for Comp 565 projects, but not AGMGSK   ---------
 	        // create walls for navigation algorithms
-	        Wall wall = new Wall(this, "wall", "100x100x100Brick");
+	        Wall wall = new Wall(this, "wall", "wooden_box");
 	        Components.Add(wall);
 	        
             // create a pack for "flocking" algorithms
 	        // create a Pack of 6 dogs centered at (450, 500) that is lead by player.
-	        Pack pack = new Pack(this, "dog", "Dragster15", 5, 450, 430, player.AgentObject, 0.5f);
+	        Pack pack = new Pack(this, "dog", "Dragster15", 5, 450, 430, player.AgentObject, 0.6f);
 	        Components.Add(pack);
 
 
