@@ -105,14 +105,15 @@ namespace AGMGSKv9 {
         private StreamWriter fout = null;
         // Stage variables
         private TimeSpan time;  // if you need to know the time see Property Time
-        
+
         // Custom Sage additions
-        private bool lerpToggle = true;//start with lerp enable
-
-        private int[] packing = new int[4] { 0, 33, 66, 99 };//add packing array corresponding to percent packing
-        private int percentPacking = 0;//index to choose which percent
-
-        // Number of treasures on this map
+        //Start with lerp enable. DLP
+        private bool lerpToggle = true;
+        //Packing array corresponding to percent packing. DLP
+        private int[] packing = new int[4] { 0, 33, 66, 99 };
+        //Index to choose which percent. DLP
+        private int percentPacking = 0;
+        //Number of treasures on this map
         private int nTreasures = 4;
 
         public Stage() : base() {
@@ -188,10 +189,12 @@ namespace AGMGSKv9 {
         public TimeSpan Time {  // Update's GameTime
 	        get { return time; }
         }
-        public int PercentPack//Accessor for the current packing percentage selected. DLP
+        //Accessor for the current packing percentage selected. DLP
+        public int PercentPack
         {
             get { return packing[percentPacking]; }
         }
+
 
         /// <summary>
         /// Trace = "string to be printed"
@@ -303,11 +306,12 @@ namespace AGMGSKv9 {
         public void setSurfaceHeight(Object3D anObject3D) {
             Vector3 A, B, C, D, aPos;
             float xY, zY;
-            bool top = true;//used to determine if player is closer to the top or bottom of a terrain unit
+            //Determine if player is closer to the top or bottom of a terrain unit. DLP
+            bool top = true;
             bool bottom = !top;
             //shorthand for vector initialization
             aPos = anObject3D.Translation;
-            //Create box corners
+            //Create box corners. DLP
             A = new Vector3((((int)aPos.X / spacing) * spacing) - spacing, terrain.surfaceHeight((int)aPos.X/spacing,(int)aPos.Z/spacing), ((int)(aPos.Z / spacing) * spacing) - spacing);
             B = new Vector3(A.X + spacing, terrain.surfaceHeight(((int)aPos.X / spacing) + 1, ((int)aPos.Z / spacing)) + 1, A.Z);
             C = new Vector3(A.X, terrain.surfaceHeight((int)aPos.X / spacing, (int)aPos.Z / spacing), A.Z + spacing);
@@ -315,15 +319,15 @@ namespace AGMGSKv9 {
             
             if (lerpToggle == true) {
                 //System.Diagnostics.Debug.WriteLine("L: on");
-                //Figure out of agent is closer to A or B
+                //Figure out of agent is closer to A or B. DLP
                 if (Vector3.Distance(A, aPos) > Vector3.Distance(D, aPos))
                     top = false;
-                //If agent closer to point A use that for lerping
+                //If agent closer to point A use that for lerping.
                 if (top) {
                     xY = Vector3.Lerp(A, B, (aPos.X - A.X) / spacing).Y - A.Y;
-                    //Y(height) difference on X
+                    //Y(height) difference on X.
                     zY = Vector3.Lerp(A, C, (aPos.Z - A.Z) / spacing).Y - A.Y;
-                    //Y(height) difference on Z
+                    //Y(height) difference on Z.
                     aPos.Y = A.Y + xY + zY;
                 }
                 else { //player must be closer to B and we use point D for larping
@@ -565,17 +569,17 @@ namespace AGMGSKv9 {
 		        inspector.ShowMatrices = ! inspector.ShowMatrices;
 		        inspector.ShowHelp = false;
             }
-            //crank up the lerp
+            //Crank up the lerp. DLP
             else if (keyboardState.IsKeyDown(Keys.L) && !oldKeyboardState.IsKeyDown(Keys.L)) {
                     lerpToggle = !lerpToggle;
             }
-            //cycle flocking percentages
+            //Cycle flocking percentages. DLP
             else if (keyboardState.IsKeyDown(Keys.P) && !oldKeyboardState.IsKeyDown(Keys.P))
             {
-                if (percentPacking == 3)//wrap index
+                if (percentPacking == 3)//Wrap index.
                     percentPacking = 0;
                 else
-                    percentPacking++;//increment pack percentage
+                    percentPacking++;//Increment pack percentage.
                 
             }
 	        // toggle update speed between FixedStep and ! FixedStep
