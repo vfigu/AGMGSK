@@ -6,7 +6,7 @@
  * and select Game Profile:  "Use HiDef".  
  * Do this once at initial project configuration.
  *
- * Group member: Vicente Figueroa
+ * Group member: Vicente Figueroa       vicente.figueroa.950@my.csun.edu
  * Group member: Daigneault Pearce
  * Theme: Mad Max
  * Project 1
@@ -14,7 +14,7 @@
  */
 
 using System;
-// using System.Collections;  // needed any more 1/11/2017
+// using System.Collections;            // needed any more 1/11/2017
 
 namespace AGMGSKv9 {
     static class Program {
